@@ -17,7 +17,7 @@ def example_list(request):
 
         title = request.GET.get('title', None)
         if title is not None:
-            examples = examples.filter(title_icontains=title)
+            examples = examples.filter(title__icontains=title)
 
         examples_serializer = ExampleSerializer(examples, many=True)
         return JsonResponse(examples_serializer.data, safe = False)
@@ -29,7 +29,7 @@ def example_list(request):
         if (example_serializer.is_valid()):
             example_serializer.save()
             return JsonResponse(example_serializer.data, status=status.HTTP_201_CREATED)
-        return JsonResponse(tutorial_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(example_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         count = Example.objects.all().delete()
@@ -41,7 +41,7 @@ def example_detail(request, pk):
     try:
         example = Example.objects.get(pk=pk)
     except Example.DoesNotExist:
-        return JsonResponse({'message': 'That tutorial does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse({'message': 'That example does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     # GET / PUT / DELETE example
     if request.method == 'GET':
@@ -56,7 +56,7 @@ def example_detail(request, pk):
         return JsonResponse(example_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
         example.delete()
-        return JsonResponse({'message': 'Tutorial was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+        return JsonResponse({'message': 'Example was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET'])
 def example_list_published(request):
